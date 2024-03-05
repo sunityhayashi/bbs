@@ -15,6 +15,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'App\Http\Controllers\BbsController@index');
-Route::post('/', 'App\Http\Controllers\BbsController@post');
-
+Route::resource('thread', 'App\Http\Controllers\ThreadController');
+Route::resource('thread/{thread_id}/comment', 'App\Http\Controllers\CommentController');
