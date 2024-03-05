@@ -74,7 +74,6 @@
                     {{$message}}
                   @enderror
                 </div>  
-                <input type="hidden" name="mode" id="mode" value="add_thread"> 
                 <input type="submit" value="SUBMIT"  class="btn btn-general btn-white">
               </form>
             </div>
@@ -92,8 +91,69 @@
 <h2> [threads] </h2>
 <br>
 @foreach ($threads as $thread)
-    <h3 id="show_thread_{{$thread->id}}"> [{{$thread->title}}]</h3>
-    <a href="http://localhost/thread/{{$thread->id}}/comment">コメント</a>
+    <h3 id="show_thread_{{$thread->id}}">[{{$thread->title}}]</h3>
+<!--====================================================
+                  COMMENTS
+======================================================--> 
+@foreach ($thread->comments as $comment)
+  <h4> comments </h4>
+        <div id="show_comment">message: {{$comment->message}}  date: {{$comment->created_at}} name: {{$comment->name}}</div>
+        <div id="delete_comment">
+            <form action="/thread/{{$thread->id}}/comment/{{$comment->id}}" method="POST">
+                @csrf
+                @method('delete')
+                <label for="input_del_pass">password</label>
+                <input type="password" id="input_del_pass_{{$comment->id}}" name="input_del_pass_{{$comment->id}}">
+                @error("input_del_pass_".$comment->id)
+                  {{$message}}
+                @enderror
+                <br>
+                <input type="submit" value="DELETE">
+                <br>
+            </form>
+        </div>
+@endforeach
+<!--====================================================
+                  NEW COMMENT
+======================================================--> 
+    <section id="new-comment">
+      <div class="container">  
+        <div class="wrapper row">
+          <div class="col-md-12">
+            <div id="new-comment-form">
+              <form action="/thread/{{$thread->id}}/comment/" method="post">
+                @csrf
+                <div class="form-group">
+                <p>new comment</p>
+                  <label for="name">Your Name</label>
+                  <input type="text" class="form-control" name="name_{{$thread->id}}" id="name" value="{{old('name')}}"> 
+                    @error('name_'.$thread->id)
+                      {{$message}}
+                    @enderror
+                </div>  
+                <div class="form-group">
+                  <label for="message">Message</label>
+                  <textarea class="form-control" name="message_{{$thread->id}}" id="message" rows="3">{{old('message')}}</textarea>
+                    @error('message_'.$thread->id)
+                      {{$message}}
+                    @enderror
+                </div>  
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" name="password_{{$thread->id}}" id="password"> 
+                    @error('password_'.$thread->id)
+                      {{$message}}
+                    @enderror
+                </div> 
+                <input type="submit" value="SUBMIT"  class="btn btn-general btn-white">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+<br>
+<br>
 @endforeach
 {{$threads->links()}}
 

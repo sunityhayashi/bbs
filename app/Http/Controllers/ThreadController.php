@@ -11,12 +11,13 @@ use App\Models\Thread;
 
 class ThreadController extends Controller
 {
+    const NUMBER_OF_THREADS_BY_PAGE = 5;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $threads = Thread::orderBy('updated_at', 'desc')->simplePaginate(5);
+        $threads = Thread::orderBy('updated_at', 'desc')->simplePaginate(self::NUMBER_OF_THREADS_BY_PAGE);
         return view('thread.index', ['threads' => $threads]);
     }
 
@@ -34,7 +35,14 @@ class ThreadController extends Controller
     public function store(Request $request)
     {
         //スレッドと最初のコメントを追加
-            $this->validate($request, Thread::$rules, Thread::$messages);
+        $validator = Validator::make($request->all(), Thread::$rules, Thread::$messages);
+        if ($validator->fails()) {
+            return redirect("/thread")
+                ->withErrors($validator)
+                ->withInput();
+        }
+        try {
+            DB::beginTransaction();
             $thread = new Thread;
             $thread->title = $request->thread_title;
             $thread->updated_at = Carbon::now();
@@ -47,8 +55,13 @@ class ThreadController extends Controller
             $comment->thread_id = $thread->id;
             $comment->created_at = Carbon::now();
             $comment->save();
+            DB::commit();
+            return redirect(self::convert_id_to_url($thread->id));
+        } catch (\Exception) {
+            DB::rollback();
+            return redirect('/thread');
+        }
 
-            return redirect("/thread/{$thread->id}");
     }
 
     /**
@@ -56,7 +69,7 @@ class ThreadController extends Controller
      */
     public function show(string $id)
     {
-        return redirect("/thread/{$id}/comment");   
+
     }
 
     /**
@@ -72,11 +85,7 @@ class ThreadController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        /*
-        $thread = Thread::find($id);
-        $request->
-        return view('bbs.show', ['thread' => $thread]);   
-        */
+
     }
 
     /**
@@ -85,5 +94,13 @@ class ThreadController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public static function convert_id_to_url($id)
+    {
+        $updated_at = Thread::find($id)->updated_at;
+        $number = Thread::where('updated_at', '>', $updated_at)->count();
+        $page = (int)($number / self::NUMBER_OF_THREADS_BY_PAGE) + 1;
+        return "thread/?page={$page}#show_thread_{$id}";
     }
 }

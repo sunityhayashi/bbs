@@ -11,9 +11,9 @@ class Thread extends Model
 
     public static $rules = [
         'thread_title' => 'required|max:20',
-        'first_name' => 'max:20',
-        'first_message' => 'required|max:100',
-        'first_password' => 'required|regex:/^[a-zA-Z0-9]*$/|between:6,20',
+        'first_name' => Comment::RULE_NAME,
+        'first_message' => Comment::RULE_MESSAGE,
+        'first_password' => Comment::RULE_PASSWORD,
     ];
 
     public static $messages = [

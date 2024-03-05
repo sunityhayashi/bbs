@@ -9,10 +9,14 @@ class Comment extends Model
 {
     protected $guarded = array('id');
 
+    const RULE_NAME = 'max:20';
+    const RULE_MESSAGE = 'required|max:100';
+    const RULE_PASSWORD = 'required|regex:/^[a-zA-Z0-9]*$/|between:6,20';
+
     public static $rules = [
-        'name' => 'max:20',
-        'message' => 'required|max:100',
-        'password' => 'required|regex:/^[a-zA-Z0-9]*$/|between:6,20'
+        'name' => self::RULE_NAME,
+        'message' => self::RULE_MESSAGE,
+        'password' => self::RULE_PASSWORD,
     ];
     
     
