@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::resource('thread', 'App\Http\Controllers\ThreadController');
-Route::resource('thread/{thread_id}/comment', 'App\Http\Controllers\CommentController');
+Route::resource('thread', 'App\Http\Controllers\ThreadController')->only('index', 'store');
+Route::resource('thread/{thread_id}/comment', 'App\Http\Controllers\CommentController')->only('store', 'destroy');
