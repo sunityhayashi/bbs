@@ -1,3 +1,4 @@
+<?php session_start() ?> 
 <!DOCTYPE html>
 <html lang="jp">
 
@@ -103,10 +104,12 @@
                 @csrf
                 @method('delete')
                 <label for="input_del_pass">password</label>
-                <input type="password" id="input_del_pass_{{$comment->id}}" name="input_del_pass_{{$comment->id}}">
-                @error("input_del_pass_".$comment->id)
-                  {{$message}}
-                @enderror
+                <input type="password" id="input_del_pass" name="input_del_pass">
+                @if(isset($_SESSION['delete_comment_id']) && $_SESSION['delete_comment_id'] == $comment->id)
+                  @error("input_del_pass")
+                    {{$message}}
+                  @enderror
+                @endif
                 <br>
                 <input type="submit" value="DELETE">
                 <br>
@@ -125,25 +128,32 @@
                 @csrf
                 <div class="form-group">
                 <p>new comment</p>
+                <?php $this_error = isset($_SESSION['add_comment_thread_id']) && $_SESSION['add_comment_thread_id'] == $thread->id ?>
                   <label for="name">Your Name</label>
-                  <input type="text" class="form-control" name="name_{{$thread->id}}" id="name" value="{{old('name')}}"> 
-                    @error('name_'.$thread->id)
+                  <input type="text" class="form-control" name="name" id="name" value="{{old('name')}}"> 
+                  @if($this_error)  
+                    @error('name')
                       {{$message}}
                     @enderror
+                  @endif
                 </div>  
                 <div class="form-group">
                   <label for="message">Message</label>
-                  <textarea class="form-control" name="message_{{$thread->id}}" id="message" rows="3">{{old('message')}}</textarea>
-                    @error('message_'.$thread->id)
+                  <textarea class="form-control" name="message" id="message" rows="3">{{old('message')}}</textarea>
+                  @if($this_error)
+                    @error('message')
                       {{$message}}
                     @enderror
+                  @endif
                 </div>  
                 <div class="form-group">
                   <label for="password">Password</label>
-                  <input type="password" class="form-control" name="password_{{$thread->id}}" id="password"> 
-                    @error('password_'.$thread->id)
+                  <input type="password" class="form-control" name="password" id="password"> 
+                  @if($this_error)  
+                    @error('password')
                       {{$message}}
                     @enderror
+                  @endif
                 </div> 
                 <input type="submit" value="SUBMIT"  class="btn btn-general btn-white">
               </form>
