@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Comment;
 use App\Models\Thread;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Helper;
 
 class CommentController extends Controller
 {
@@ -43,9 +45,7 @@ class CommentController extends Controller
             ];
             $validator = Validator::make($request->all(), $rules, $messages);
             if ($validator->fails()) {
-                session_start();
-                $_SESSION['add_comment_thread_id'] = $thread_id;
-                return redirect(ThreadController::convert_id_to_url($thread_id))
+                return redirect(Helper::convert_id_to_url($thread_id))->with('add_comment_thread_id', $thread_id)
                     ->withErrors($validator)
                     ->withInput();
             }
@@ -63,7 +63,7 @@ class CommentController extends Controller
             $thread->updated_at = $comment->created_at;
             $thread->save();
 
-            return redirect(ThreadController::convert_id_to_url($thread_id));
+            return redirect(Helper::convert_id_to_url($thread_id));
     }
 
     /**
@@ -105,13 +105,11 @@ class CommentController extends Controller
             ];
             $validator = Validator::make($request->all(), $rules, $messages);
             if ($validator->fails()) {
-                session_start();
-                $_SESSION['delete_comment_id'] = $id;
-                return redirect(ThreadController::convert_id_to_url($thread_id))
+                return redirect(Helper::convert_id_to_url($thread_id))->with('delete_comment_id', $id)
                     ->withErrors($validator)
                     ->withInput();
             }
             $comment->delete();
-            return redirect(ThreadController::convert_id_to_url($thread_id));
+            return redirect(Helper::convert_id_to_url($thread_id));
     }
 }

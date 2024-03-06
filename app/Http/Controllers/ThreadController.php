@@ -8,16 +8,16 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Comment;
 use App\Models\Thread;
+use App\Helpers\Helper;
 
 class ThreadController extends Controller
 {
-    const NUMBER_OF_THREADS_BY_PAGE = 5;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $threads = Thread::orderBy('updated_at', 'desc')->simplePaginate(self::NUMBER_OF_THREADS_BY_PAGE);
+        $threads = Thread::orderBy('updated_at', 'desc')->simplePaginate(Helper::NUMBER_OF_THREADS_BY_PAGE);
         return view('thread.index', ['threads' => $threads]);
     }
 
@@ -56,7 +56,7 @@ class ThreadController extends Controller
             $comment->created_at = Carbon::now();
             $comment->save();
             DB::commit();
-            return redirect(self::convert_id_to_url($thread->id));
+            return redirect(Helper::convert_id_to_url($thread->id));
         } catch (\Exception) {
             DB::rollback();
             return redirect('/thread');
@@ -94,13 +94,5 @@ class ThreadController extends Controller
     public function destroy(string $id)
     {
         //
-    }
-
-    public static function convert_id_to_url($id)
-    {
-        $updated_at = Thread::find($id)->updated_at;
-        $number = Thread::where('updated_at', '>', $updated_at)->count();
-        $page = (int)($number / self::NUMBER_OF_THREADS_BY_PAGE) + 1;
-        return "thread/?page={$page}#show_thread_{$id}";
     }
 }

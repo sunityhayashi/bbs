@@ -1,4 +1,3 @@
-<?php session_start() ?> 
 <!DOCTYPE html>
 <html lang="jp">
 
@@ -105,7 +104,7 @@
                 @method('delete')
                 <label for="input_del_pass">password</label>
                 <input type="password" id="input_del_pass" name="input_del_pass">
-                @if(isset($_SESSION['delete_comment_id']) && $_SESSION['delete_comment_id'] == $comment->id)
+                @if(App\Helpers\Helper::is_delete_comment_id($comment->id))
                   @error("input_del_pass")
                     {{$message}}
                   @enderror
@@ -128,10 +127,9 @@
                 @csrf
                 <div class="form-group">
                 <p>new comment</p>
-                <?php $this_error = isset($_SESSION['add_comment_thread_id']) && $_SESSION['add_comment_thread_id'] == $thread->id ?>
                   <label for="name">Your Name</label>
                   <input type="text" class="form-control" name="name" id="name" value="{{old('name')}}"> 
-                  @if($this_error)  
+                  @if(App\Helpers\Helper::is_add_comment_thread_id($thread->id))  
                     @error('name')
                       {{$message}}
                     @enderror
@@ -140,7 +138,7 @@
                 <div class="form-group">
                   <label for="message">Message</label>
                   <textarea class="form-control" name="message" id="message" rows="3">{{old('message')}}</textarea>
-                  @if($this_error)
+                  @if(App\Helpers\Helper::is_add_comment_thread_id($thread->id))  
                     @error('message')
                       {{$message}}
                     @enderror
@@ -149,7 +147,7 @@
                 <div class="form-group">
                   <label for="password">Password</label>
                   <input type="password" class="form-control" name="password" id="password"> 
-                  @if($this_error)  
+                  @if(App\Helpers\Helper::is_add_comment_thread_id($thread->id))  
                     @error('password')
                       {{$message}}
                     @enderror
