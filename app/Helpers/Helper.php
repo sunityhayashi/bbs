@@ -4,6 +4,8 @@ namespace App\Helpers;
 
 use App\Models\Thread;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+
 
 class Helper 
 {
@@ -12,7 +14,7 @@ class Helper
     public static function convert_id_to_url($id)
     {
         $updated_at = Thread::find($id)->updated_at;
-        $number = Thread::where('updated_at', '>', $updated_at)->count();
+        $number = Thread::where('updated_at', '>=', $updated_at)->count();
         $page = (int)($number / self::NUMBER_OF_THREADS_BY_PAGE) + 1;
         return "thread/?page={$page}#show_thread_{$id}";
     }

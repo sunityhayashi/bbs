@@ -10,6 +10,7 @@ use App\Models\Comment;
 use App\Models\Thread;
 use Illuminate\Support\Facades\Session;
 use App\Helpers\Helper;
+use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {

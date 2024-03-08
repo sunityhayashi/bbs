@@ -91,13 +91,13 @@
 <h2> [threads] </h2>
 <br>
 @foreach ($threads as $thread)
-    <h3 id="show_thread_{{$thread->id}}">[{{$thread->title}}]</h3>
+    <h3 id="show_thread_{{$thread->id}}">[{{$thread->id}} {{$thread->title}} {{$thread->updated_at}}]</h3>
 <!--====================================================
                   COMMENTS
 ======================================================--> 
 @foreach ($thread->comments as $comment)
   <h4> comments </h4>
-        <div id="show_comment">message: {{$comment->message}}  date: {{$comment->created_at}} name: {{$comment->name}}</div>
+        <div id="show_comment">id:{{$comment->id}} message: {{$comment->message}}  date: {{$comment->created_at}} name: {{$comment->name}}</div>
         <div id="delete_comment">
             <form action="/thread/{{$thread->id}}/comment/{{$comment->id}}" method="POST">
                 @csrf
@@ -128,7 +128,7 @@
                 <div class="form-group">
                 <p>new comment</p>
                   <label for="name">Your Name</label>
-                  <input type="text" class="form-control" name="name" id="name" value="{{old('name')}}"> 
+                  <input type="text" class="form-control" name="name" id="name" @if(App\Helpers\Helper::is_add_comment_thread_id($thread->id)) value="{{old('name')}}"@endif> 
                   @if(App\Helpers\Helper::is_add_comment_thread_id($thread->id))  
                     @error('name')
                       {{$message}}
@@ -137,7 +137,7 @@
                 </div>  
                 <div class="form-group">
                   <label for="message">Message</label>
-                  <textarea class="form-control" name="message" id="message" rows="3">{{old('message')}}</textarea>
+                  <textarea class="form-control" name="message" id="message" rows="3">@if(App\Helpers\Helper::is_add_comment_thread_id($thread->id)){{old('message')}}@endif</textarea>
                   @if(App\Helpers\Helper::is_add_comment_thread_id($thread->id))  
                     @error('message')
                       {{$message}}
