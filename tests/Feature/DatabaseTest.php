@@ -18,33 +18,33 @@ class DatabaseTest extends TestCase
     public function test_post_thread(): void
     {
         $this->post('/thread', [
-            'thread_title' => 'test',
-            'first_name' => 'tanaka',
-            'first_message' => 'test is difficult.',
-            'first_password' => 'tanakatanaka',
+            'thread_title' => ValidationTest::ACCEPT_TITLE,
+            'first_name' => ValidationTest::ACCEPT_NAME,
+            'first_message' => ValidationTest::ACCEPT_MESSAGE,
+            'first_password' => ValidationTest::ACCEPT_PASSWORD,
         ]);
 
         $this->assertDatabaseHas('threads', [
-            'title' => 'test',
+            'title' => ValidationTest::ACCEPT_TITLE,
         ]);
     }
 
     public function test_post_comment(): void
     {
         $this->post('/thread', [
-            'thread_title' => 'test',
-            'first_name' => 'tanaka',
-            'first_message' => 'test is difficult.',
-            'first_password' => 'tanakatanaka',
+            'thread_title' => ValidationTest::ACCEPT_TITLE,
+            'first_name' => ValidationTest::ACCEPT_NAME,
+            'first_message' => ValidationTest::ACCEPT_MESSAGE,
+            'first_password' => ValidationTest::ACCEPT_PASSWORD,
         ]);
         $this->post('/thread/1/comment', [
-            'name' => 'tanaka',
-            'message' => 'Today is Monday.',
-            'password' => 'tanakatanaka',
+            'name' => ValidationTest::ACCEPT_NAME,
+            'message' => ValidationTest::ACCEPT_MESSAGE,
+            'password' => ValidationTest::ACCEPT_PASSWORD,
         ]);
 
         $this->assertDatabaseHas('comments', [
-            'message' => 'Today is Monday.',
+            'message' => ValidationTest::ACCEPT_MESSAGE,
         ]);
 
 
