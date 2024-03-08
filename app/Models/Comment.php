@@ -9,9 +9,21 @@ class Comment extends Model
 {
     protected $guarded = array('id');
 
-    const RULE_NAME = 'max:20';
-    const RULE_MESSAGE = 'required|max:100';
-    const RULE_PASSWORD = 'required|regex:/^[a-zA-Z0-9]*$/|between:6,20';
+    const NAME_REQUIRED = false;
+    const NAME_LENGTH_MAX = 20;
+    const MESSAGE_REQUIRED = true;
+    const MESSAGE_LENGTH_MAX = 100;
+    const PASSWORD_REQUIRED = true;
+    const PASSWORD_LENGTH_MIN = 6;
+    const PASSWORD_LENGTH_MAX = 20;
+    const PASSWORD_HALF_SIZE_ALPHABET_OR_NUMBER = true;
+
+    const REQUIRED_CONVERT = [true => 'required', false => ''];
+    const HALF_SIZE_ALPHABET_OR_NUMBER_CONVERT = [true => 'regex:/^[a-zA-Z0-9]*$/', false => ''];
+
+    const RULE_NAME = 'max:'.self::NAME_LENGTH_MAX;
+    const RULE_MESSAGE = self::REQUIRED_CONVERT[self::MESSAGE_REQUIRED].'|max:'.self::MESSAGE_LENGTH_MAX;
+    const RULE_PASSWORD = self::REQUIRED_CONVERT[self::PASSWORD_REQUIRED].'|'.self::HALF_SIZE_ALPHABET_OR_NUMBER_CONVERT[self::PASSWORD_HALF_SIZE_ALPHABET_OR_NUMBER].'|between:'.self::PASSWORD_LENGTH_MIN.','.self::PASSWORD_LENGTH_MAX;
 
     public static $rules = [
         'name' => self::RULE_NAME,
